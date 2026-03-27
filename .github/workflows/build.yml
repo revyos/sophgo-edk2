@@ -9,18 +9,18 @@ on:
 
 jobs:
   build-edk2:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         M_PLAT_NAME: [SG2042-EVB, MilkV-Pioneer, SRA1-20]
 
     env:
-      mainline_elf_toolchain: https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2023.12.14
-      mainline_elf_toolchain_file_name: riscv64-elf-ubuntu-22.04-gcc-nightly-2023.12.14-nightly.tar.gz
+      mainline_elf_toolchain: https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2025.12.30
+      mainline_elf_toolchain_file_name: riscv64-elf-ubuntu-24.04-gcc.tar.xz
       wget_alias: 'wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0'
       CHIP: mango
       PLAT: ${{ matrix.M_PLAT_NAME }}
-    
+
     steps:
       - name: Install toolchains
         run: |
@@ -37,11 +37,9 @@ jobs:
       - name: Checkout sophgo-edk2
         uses: actions/checkout@v4
         with:
-          repository: sophgo/sophgo-edk2
           path: sophgo-edk2
-          ref: devel-sg2042
           submodules: recursive
-      
+
       - name: prepare
         run: mkdir -p artifact
 
@@ -54,7 +52,7 @@ jobs:
               export GCC5_RISCV64_PREFIX=riscv64-unknown-elf-
               source edk2/edksetup.sh
               make -C edk2/BaseTools
-              build -a RISCV64 -t GCC5 -b RELEASE -D ACPI_ENABLE -p Platform/Sophgo/SG2042Pkg/${PLAT}/${PLAT}.dsc
+              build -a RISCV64 -t GCC5 -b RELEASE -D ACPI_ENABLE=false -p Platform/Sophgo/SG2042Pkg/${PLAT}/${PLAT}.dsc
               cp -v $WORKSPACE/Build/${PLAT}/RELEASE_GCC5/FV/${PLAT^^}.fd $GITHUB_WORKSPACE/artifact/${PLAT}.fd
 
       - name: 'Upload Build Artifact'
