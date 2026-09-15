@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        M_PLAT_NAME: [SRA3-40, SRA3-40-8, SD3-10]
+        M_PLAT_NAME: [SRA3-40, SD3-10, SD3-10-LB]
 
     env:
       mainline_elf_toolchain: https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/2026.07.15
@@ -37,9 +37,7 @@ jobs:
       - name: Checkout sophgo-edk2
         uses: actions/checkout@v4
         with:
-          repository: sophgo/sophgo-edk2
           path: sophgo-edk2
-          ref: devel-sg2044
           submodules: recursive
       
       - name: prepare
